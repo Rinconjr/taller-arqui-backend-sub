@@ -51,6 +51,17 @@ builder.Services.AddWebSockets(options =>
 // Registrar el WebSocketConnectionManager
 builder.Services.AddSingleton<WebSocketConnectionManager>();
 
+// Configurar CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -64,10 +75,15 @@ app.UseHttpsRedirection();
 
 app.UseAuthorization();
 
-app.MapControllers();
-
 // Configurar el middleware de WebSocket
 app.UseWebSockets();
+
+// Usar CORS
+app.UseCors("AllowAll");
+
+app.MapControllers();
+
+
 
 app.Use(async (context, next) =>
 {
@@ -94,7 +110,6 @@ app.Use(async (context, next) =>
         await next();
     }
 });
-
 
 app.Run();
 
