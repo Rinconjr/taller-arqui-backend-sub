@@ -5,21 +5,21 @@ WORKDIR /source
 # Copiar los archivos .csproj y restaurar las dependencias
 COPY *.sln .
 COPY CommunWork/CommunWork.csproj CommunWork/
-COPY SubscriptoAplicacion/SuscriptorAplicaction.csproj SuscriptorAplicaction/
+COPY SubscriptoAplicaction/SuscriptorAplicaction.csproj SubscriptoAplicaction/
 
 RUN dotnet restore
 
 # Copiar todo el código fuente y construir el proyecto
 COPY . .
-WORKDIR /source/SubscriptoAplicacion
-RUN dotnet publish -c Release -o /app --no-restore
+WORKDIR /source/SubscriptoAplicaction
+RUN dotnet publish -c Release -o /app
 
 # Etapa de producción
 FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
 WORKDIR /app
 COPY --from=build /app .
 
-# Exponer los puertos HTTP (5054) y HTTPS (7016)
+# Exponer los puertos HTTP y HTTPS utilizados
 EXPOSE 5054
 EXPOSE 7016
 
@@ -27,4 +27,4 @@ EXPOSE 7016
 ENV ASPNETCORE_URLS="http://+:5054;https://+:7016"
 
 # Comando de inicio
-ENTRYPOINT ["dotnet", "SubscriptoAplicacion.dll"]
+ENTRYPOINT ["dotnet", "SuscriptorAplicaction.dll"]
