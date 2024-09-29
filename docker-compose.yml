@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  backend-sub:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "7016:7016" # Mapea el puerto HTTP
+      - "5054:5054" # Mapea el puerto secundario si es necesario
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:7016
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
